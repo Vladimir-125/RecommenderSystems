@@ -77,7 +77,11 @@ def train():
         loss_sum = 0
         batch_num = 1
         for row, col in batch(rows, cols, 256):
-            optimizer.zero_grad()
+	    # Always clear any previously calculated gradients before performing a
+	    # backward pass. PyTorch doesn't do this automatically because 
+	    # accumulating the gradients is "convenient while training RNNs". 
+	    # (source: https://stackoverflow.com/questions/48001598/why-do-we-need-to-call-zero-grad-in-pytorch)
+	    optimizer.zero_grad()
             # Turn data into tensors
             rating = torch.FloatTensor(ratings[row, col]).to(DEVICE)
             #print(rating)
